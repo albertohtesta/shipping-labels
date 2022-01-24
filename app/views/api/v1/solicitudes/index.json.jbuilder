@@ -1,0 +1,1 @@
+json.array! @solicitudes, partial: 'api/v1/solicitudes/solicitude', as: :solicitude

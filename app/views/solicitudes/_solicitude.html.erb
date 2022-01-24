@@ -1,0 +1,11 @@
+<div class="mb-3 card card-body">
+	<%= solicitude.fecha %>
+	<div class="me-4">
+		<span><%= solicitude.status %></span>
+		<span><%= solicitude.tracking_number %></span>
+		<% if solicitude.status == "200" %>
+			<%= link_to "Label", solicitude.url_label, target: :_blank %>
+		<% end %>
+
+	</div>
+</div>

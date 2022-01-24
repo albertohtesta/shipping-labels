@@ -1,0 +1,1 @@
+json.(solicitude, :id, :fecha, :status, :tracking_number)
