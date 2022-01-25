@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_22_183146) do
+ActiveRecord::Schema.define(version: 2022_01_24_181030) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -46,6 +46,11 @@ ActiveRecord::Schema.define(version: 2022_01_22_183146) do
     t.string "weight_unit"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "status"
+    t.string "shipment_id"
+    t.string "label_url"
+    t.string "id_response"
+    t.string "tracking_number"
     t.index ["carrier_id"], name: "index_shippings_on_carrier_id"
     t.index ["solicitude_id"], name: "index_shippings_on_solicitude_id"
   end

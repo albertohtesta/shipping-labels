@@ -1,8 +1,10 @@
 Rails.application.routes.draw do
   root to: "main#index"
 
-  resources :shippings
-  resources :solicitudes
+  resources :solicitudes, only: [:index, :create] do
+    resources :shippings, only: [:index] do
+    end
+  end
 
   namespace :api, defaults: { format: 'json' } do
     namespace :v1 do

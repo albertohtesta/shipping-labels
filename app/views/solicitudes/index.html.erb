@@ -2,4 +2,20 @@
 	<h1>Solicitudes</h1>
 </div>
 
-<%= render @solicitudes %>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Fecha</th>
+      <th scope="col">Status</th>
+      <th scope="col">Url-label</th>
+      <th scope="col">Url-recurso</th>
+    </tr>
+  </thead>
+  <tbody>
+  	<%= render @solicitudes %>
+  </tbody>
+</table>
+
+
