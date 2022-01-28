@@ -3,11 +3,13 @@ class SolicitudeSecondTryJob < ApplicationJob
   include Interfaceable
 
   def perform(shipping)
-    object_for_carrier = format_object_for_carrier(shipping)
-  	endpoint = shipping.carrier.endpoint
-    token = shipping.carrier.token
-    @response = Carrierservice::SendSolicitude.send(object_for_carrier, endpoint, token)
-    check_response_and_save_shippings_status(@response, shipping)
+      getResponse(shipping)
+      if shipping.status != "200"
+        # manda a status 3
+        SolicitudeThirdTryJob.set(wait_until: 1.minutes.from_now(Time.now)).perform_later(shipping)
+      else 
+        downloadPdf(shipping)
+      end
   end
 
 end

@@ -1,6 +1,20 @@
 module Interfaceable
   extend ActiveSupport::Concern
 
+  def getResponse(shipping)
+      object_for_carrier = format_object_for_carrier(shipping)
+      endpoint = shipping.carrier.endpoint
+      token = shipping.carrier.token
+      @response = Carrierservice::SendSolicitude.send(object_for_carrier, endpoint, token)
+      check_response_and_save_shippings_status(@response, shipping)
+  end
+
+  def downloadPdf(shipping)
+        solicitude = shipping.solicitude
+        Down.download(shipping.label_url, destination: "#{Rails.root}/public/pdfs/#{solicitude.id}-#{shipping.id}.pdf")
+        #solicitude.label_pdfs.attach(io: File.open("#{Rails.root}/public/pdfs/#{solicitude.id}-#{shipping.id}.pdf"), filename: "#{solicitude.id}-#{shipping.id}.pdf")
+  end
+
   def check_response_and_save_shippings_status(response, shipping)
     if response
       shipping.status = response.code.to_s

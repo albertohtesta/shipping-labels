@@ -1,0 +1,14 @@
+<tr>
+  <th scope="row"><%=  %></th>
+  <td>
+    <% if label.representable? %>
+      <%= image_tag label.representation(resize_to_limit: [100, 100]) %>
+    <% else %>
+      <%= link_to rails_blob_path(label, disposition: "attachment") do %>
+        <%= image_tag "placeholder.png", alt: "Download file" %>
+      <% end %>
+    <% end %>
+  </td>
+
+</tr>
+

@@ -1,0 +1,17 @@
+<div class="d-flex justify-content-between align-items-center">
+	<h1><%= "Solicitud #{@solicitude.id} -" %>Labels</h1>
+</div>
+
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Label</th>
+    </tr>
+  </thead>
+  <tbody>
+  	<% @solicitude.label_pdfs.each do |label| %>
+		<%= render 'label_pdfs', label: label %>
+	<% end %>
+  </tbody>
+</table>

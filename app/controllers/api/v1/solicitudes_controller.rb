@@ -1,6 +1,9 @@
 module Api
   module V1
     class SolicitudesController < ApplicationController
+      require 'rubygems'
+      require 'zip'
+
       skip_before_action :verify_authenticity_token
 
       def index
@@ -16,10 +19,48 @@ module Api
         end
       end
 
+      def status
+        solicitude = Solicitude.where(id: params[:id]).first
+        if solicitude.status = 'processing'
+          solicitude.status = 'completed'
+          create_zip(solicitude)
+        else
+          solicitude.status = 'error'
+        end
+        if solicitude.save      
+          render json: { status: solicitude.status }, status: :ok
+        else
+          render json: { errors: solicitude.errors }, status: :unprocessable_entity
+        end
+      end
+
       private
 
+      def create_zip(solicitude)
+
+        folder_to_zip = "#{Rails.root}/public/pdfs"
+        input_filenames = []
+        solicitude.shippings.each do |ship|
+          file = "#{solicitude.id}-#{ship.id}.pdf"
+          input_filenames << file
+        end
+
+        zipfile_name = "#{Rails.root}/public/zips/#{solicitude.id}.zip"       
+
+        Zip::File.open(zipfile_name, create: true) do |zipfile|
+          input_filenames.each do |filename|
+            # Two arguments:
+            # - The name of the file as it will appear in the archive
+            # - The original file, including the path to find it
+            zipfile.add(filename, File.join(folder_to_zip, filename))
+          end
+          zipfile.get_output_stream("myFile") { |f| f.write "myFile contains just this" }
+        end
+
+      end
+
       def crea_solicitud_con_shippings
-        nueva_solicitud = Solicitude.new(fecha: Date.today, tracking_number: '11111')
+        nueva_solicitud = Solicitude.new(fecha: Date.today, tracking_number: '11111', status: 'pending')
 
         params[:_json].each_with_index do |r, i|
           carrier_id = Carrier.find_by(name: params[:_json][i][:carrier]).id
