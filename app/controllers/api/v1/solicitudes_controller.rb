@@ -21,20 +21,38 @@ module Api
 
       def status
         solicitude = Solicitude.where(id: params[:id]).first
-        if solicitude.status = 'processing'
-          solicitude.status = 'completed'
-          create_zip(solicitude)
-        else
-          solicitude.status = 'error'
-        end
-        if solicitude.save      
-          render json: { status: solicitude.status }, status: :ok
+        update_status(solicitude)
+ 
+        if solicitude     
+          render json: { status: solicitude.status, url: solicitude.status == "completed" ? "http://localhost:3000/api/v1/download_pdf?solicitud_id=#{solicitude.id}" : "" }, status: :ok
         else
           render json: { errors: solicitude.errors }, status: :unprocessable_entity
         end
       end
 
+      def download_pdf 
+        send_file "#{Rails.root}/public/zips/#{params[:solicitud_id]}.zip", type: "application/zip", x_sendfile: true 
+      end
+
       private
+
+      def update_status(solicitude)
+
+        return solicitude unless (solicitude.status != "completed" && solicitude.status != "error")
+
+          if solicitude.status = 'processing'
+            solicitude.status = 'completed'
+            create_zip(solicitude)
+          else
+            solicitude.status = 'error'
+          end
+          if solicitude.save
+            return solicitude
+          else
+            return nil
+          end 
+       
+      end
 
       def create_zip(solicitude)
 

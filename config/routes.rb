@@ -11,6 +11,7 @@ Rails.application.routes.draw do
       resources :shippings, only: [:index]
       resources :solicitudes, only: [:create, :index]
       get '/status', to: 'solicitudes#status'
+      get 'download_pdf', to: "solicitudes#download_pdf"
     end
   end
   
